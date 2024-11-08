@@ -16,65 +16,83 @@
  */
 
 #include "game.hpp"
-#include "colors.hpp"
 #include <iostream>
 
-Game::Game(std::string playerName) : player(std::move(playerName)) {}
+Game::Game(const std::string& playerName)
+    : player(playerName), window(sf::VideoMode(800, 600), "Space Adventure Game") {
+
+    // Load font for displaying text
+    if (!font.loadFromFile("path/to/your/font.ttf")) {
+        throw std::runtime_error("Failed to load font");
+    }
+
+    // Setup status text
+    statusText.setFont(font);
+    statusText.setCharacterSize(20);
+    statusText.setFillColor(sf::Color::White);
+    updateStatusText();
+
+    // Setup menu text
+    menuText.setFont(font);
+    menuText.setCharacterSize(20);
+    menuText.setFillColor(sf::Color::Yellow);
+    menuText.setString("1 - Show player status\n2 - Update position\n3 - Gain XP\n0 - Exit");
+    menuText.setPosition(20, 300);
+}
 
 void Game::start() {
     showWelcomeMessage();
-    player.showStatus();
-    int choice;
-
-    do {
-        showMenu();
-        std::cout << "Choose an action: ";
-        std::cin >> choice;
-        handleInput(choice);
-    } while (choice != 0);
-
-    std::cout << "Exiting the game. Goodbye!\n";
+    while (window.isOpen()) {
+        handleInput();
+        render();
+    }
 }
 
 void Game::showWelcomeMessage() {
-    std::cout << BOLD << CYAN << "Welcome to the Space Adventure Game!" << RESET << "\n";
-    std::cout << "You are a space explorer, ready to conquer the universe.\n";
-    std::cout << YELLOW << "Current Status:\n" << RESET;
+    statusText.setString("Welcome to the Space Adventure Game!\nYou are a space explorer, ready to conquer the universe.");
+    statusText.setPosition(20, 20);
 }
 
-void Game::showMenu() {
-    std::cout << "\n--- Game Menu ---\n";
-    std::cout << "1 - Show player status\n";
-    std::cout << "2 - Update position\n";
-    std::cout << "3 - Gain XP\n";
-    std::cout << "0 - Exit\n";
-}
-
-void Game::handleInput(const int choice) {
-    switch (choice) {
-        case 1:
-            player.showStatus();
-        break;
-        case 2: {
-            int x, y;
-            std::cout << "Enter new X position: ";
-            std::cin >> x;
-            std::cout << "Enter new Y position: ";
-            std::cin >> y;
-            player.updatePosition(x, y);
-            break;
+void Game::handleInput() {
+    sf::Event event;
+    while (window.pollEvent(event)) {
+        if (event.type == sf::Event::Closed) {
+            window.close();
+        } else if (event.type == sf::Event::KeyPressed) {
+            switch (event.key.code) {
+                case sf::Keyboard::Num1:
+                    updateStatusText();
+                    break;
+                case sf::Keyboard::Num2:
+                    player.updatePosition(player.getPosX() + 10, player.getPosY() + 10);
+                    updateStatusText();
+                    break;
+                case sf::Keyboard::Num3:
+                    player.gainXP(100);
+                    updateStatusText();
+                    break;
+                case sf::Keyboard::Num0:
+                    window.close();
+                    break;
+                default:
+                    break;
+            }
         }
-        case 3: {
-            std::cout << "Enter XP to gain: ";
-            const int xp = getSafeXPInput();
-            player.gainXP(xp);
-            break;
-        }
-        case 0:
-            std::cout << "Preparing to exit the game.\n";
-        break;
-        default:
-            std::cout << "Invalid choice. Please try again.\n";
-        break;
     }
+}
+
+void Game::updateStatusText() {
+    statusText.setString("Player Status:\n" +
+                         player.getName() + "\nHP: " +
+                         std::to_string(player.getHP()) + "\nLevel: " +
+                         std::to_string(player.getLevel()) + "\nXP: " +
+                         std::to_string(player.getXP()) + "/" + std::to_string(player.getXPToNextLevel()));
+    statusText.setPosition(20, 20);
+}
+
+void Game::render() {
+    window.clear();
+    window.draw(statusText);
+    window.draw(menuText);
+    window.display();
 }

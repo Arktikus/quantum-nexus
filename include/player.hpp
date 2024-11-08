@@ -22,13 +22,21 @@
 
 class Player {
 public:
-    explicit Player(std::string  name);
+    explicit Player(const std::string& name); // Ensure the constructor is declared here
 
-    void showStatus() const;
     void updatePosition(int x, int y);
-
     void gainXP(int amount);
     void levelUp();
+
+    // Getter methods for rendering purposes in SFML
+    const std::string& getName() const { return name; }
+    int getHP() const { return hp; }
+    int getLevel() const { return level; }
+    int getXP() const { return xp; }
+    int getXPToNextLevel() const { return xpToNextLevel; }
+    int getCredits() const { return credits; }
+    int getPosX() const { return posX; }
+    int getPosY() const { return posY; }
 
 private:
     std::string name;

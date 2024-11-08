@@ -19,19 +19,26 @@
 #define GAME_HPP
 
 #include "player.hpp"
+//#include <SFML/Graphics.hpp>
 #include <string>
 
 class Game {
 public:
-    explicit Game(std::string playerName);
+    explicit Game(const std::string& playerName);
     void start();
 
 private:
     Player player;
+    sf::RenderWindow window;
+    sf::Font font;
+    sf::Text statusText;
+    sf::Text menuText;
+    sf::Text inputPromptText;
 
-    static void showWelcomeMessage();
-    static void showMenu();
-    void handleInput(int choice);
+    void showWelcomeMessage();
+    void render();
+    void handleInput();
+    void updateStatusText();
 };
 
 #endif //GAME_HPP
