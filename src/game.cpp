@@ -19,10 +19,10 @@
 #include <iostream>
 
 Game::Game(const std::string& playerName)
-    : player(playerName), window(sf::VideoMode(800, 600), "Space Adventure Game") {
+    : player(playerName), window(sf::VideoMode(800, 600), "Quantum Nexus") {
 
     // Load font for displaying text
-    if (!font.loadFromFile("path/to/your/font.ttf")) {
+    if (!font.loadFromFile("/usr/share/fonts/noto/NotoSans-Regular.ttf")) {
         throw std::runtime_error("Failed to load font");
     }
 
@@ -49,12 +49,12 @@ void Game::start() {
 }
 
 void Game::showWelcomeMessage() {
-    statusText.setString("Welcome to the Space Adventure Game!\nYou are a space explorer, ready to conquer the universe.");
+    statusText.setString("Welcome to Quantum Nexus!\nYou are a space explorer, ready to conquer the universe.");
     statusText.setPosition(20, 20);
 }
 
 void Game::handleInput() {
-    sf::Event event;
+    sf::Event event{};
     while (window.pollEvent(event)) {
         if (event.type == sf::Event::Closed) {
             window.close();
@@ -86,7 +86,10 @@ void Game::updateStatusText() {
                          player.getName() + "\nHP: " +
                          std::to_string(player.getHP()) + "\nLevel: " +
                          std::to_string(player.getLevel()) + "\nXP: " +
-                         std::to_string(player.getXP()) + "/" + std::to_string(player.getXPToNextLevel()));
+                         std::to_string(player.getXP()) + "/" + std::to_string(player.getXPToNextLevel()) + "\nCredits: " +
+                         std::to_string(player.getCredits()) + "\nX: " +
+                         std::to_string(player.getPosX()) + "\nY: " +
+                         std::to_string(player.getPosY()) + "\n");
     statusText.setPosition(20, 20);
 }
 

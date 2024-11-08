@@ -19,7 +19,7 @@
 #define GAME_HPP
 
 #include "player.hpp"
-//#include <SFML/Graphics.hpp>
+#include <SFML/Graphics.hpp>
 #include <string>
 
 class Game {
